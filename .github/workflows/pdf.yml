@@ -30,11 +30,19 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Localizar projeto Android
+      - name: Preparar projeto Android
         id: project
         shell: bash
         run: |
           settings_file="$(find "$GITHUB_WORKSPACE" -name settings.gradle.kts -print -quit)"
+          if [ -z "$settings_file" ]; then
+            archive="$(find "$GITHUB_WORKSPACE" -maxdepth 3 -type f -iname '*.zip' -print -quit)"
+            if [ -n "$archive" ]; then
+              mkdir -p "$GITHUB_WORKSPACE/.pequeno-pdf-source"
+              unzip -q "$archive" -d "$GITHUB_WORKSPACE/.pequeno-pdf-source"
+              settings_file="$(find "$GITHUB_WORKSPACE/.pequeno-pdf-source" -name settings.gradle.kts -print -quit)"
+            fi
+          fi
           test -n "$settings_file" || { echo "settings.gradle.kts não encontrado."; exit 1; }
           echo "dir=$(dirname "$settings_file")" >> "$GITHUB_OUTPUT"
 
