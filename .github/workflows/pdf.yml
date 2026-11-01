@@ -44,7 +44,9 @@ jobs:
             fi
           fi
           test -n "$settings_file" || { echo "settings.gradle.kts não encontrado."; exit 1; }
-          echo "dir=$(dirname "$settings_file")" >> "$GITHUB_OUTPUT"
+          project_dir="$(dirname "$settings_file")"
+          echo "dir=$project_dir" >> "$GITHUB_OUTPUT"
+          echo "apk=$project_dir/app/build/outputs/apk/debug/app-debug.apk" >> "$GITHUB_OUTPUT"
 
       - name: Compilar APK
         run: gradle -p "${{ steps.project.outputs.dir }}" :app:assembleDebug
@@ -53,6 +55,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: PEQUENO-PDF-debug
-          path: "**/app/build/outputs/apk/debug/app-debug.apk"
+          path: "${{ steps.project.outputs.apk }}"
           if-no-files-found: error
           retention-days: 30
