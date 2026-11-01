@@ -20,11 +20,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Preparar Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
-          cache: gradle
 
       - name: Preparar Gradle
         uses: gradle/actions/setup-gradle@v4
